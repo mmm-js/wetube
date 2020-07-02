@@ -8,7 +8,7 @@ const handleListening = () =>
 
 const handleHome = (req, res) => res.send("hello");
 
-const handleProfile = (req, res) => res.send("you");
+const handleProfile = (req, res) => res.send("you!");
 
 app.get("/", handleHome);
 app.get("/profile", handleProfile);
