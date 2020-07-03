@@ -1,5 +1,10 @@
 import "core-js";
 import express from "express";
+import morgan from "morgan";
+import helmet from "helmet";
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
+
 const app = express();
 
 const PORT = 4000;
@@ -10,15 +15,13 @@ const handleHome = (req, res) => res.send("hello");
 
 const handleProfile = (req, res) => res.send("you! hi");
 
-const betweenHome = (req, res, next) => {
-  console.log("I'm between");
-  next();
-};
+app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(helmet()); //보안에 도움이 됨
+app.use(morgan("dev")); //logging
 
 app.get("/", handleHome);
-
-app.use(betweenHome);
-
 app.get("/profile", handleProfile);
 
 app.listen(PORT, handleListening);
