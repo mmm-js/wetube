@@ -14,6 +14,7 @@ const app = express();
 
 app.use(helmet()); //보안에 도움이 됨
 app.set("view engine", "pug");
+app.use("/uploads", express.static("uploads")); //directory에서 file을 보내주는 middleware
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

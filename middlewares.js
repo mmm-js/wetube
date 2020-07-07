@@ -2,7 +2,7 @@ import multer from "multer";
 import routes from "./routes";
 
 //파일 저장 destination 설정
-const multerVideo = multer({ dest: "videos/" });
+const multerVideo = multer({ dest: "uploads/videos/" });
 
 export const localsMiddleware = (req, res, next) => {
   res.locals.siteName = "WeTube";
