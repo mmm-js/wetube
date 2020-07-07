@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
-
+import dotenv from "dotenv";
+dotenv.config();
 //mongod > port=27017
 //mongodb://localhost:포트번호/database이름
-mongoose.connect("mongodb://localhost:27017/wetube", {
+mongoose.connect(process.env.MONGO_URL, {
   //configuration(환경설정)
   useNewUrlParser: true,
   useFindAndModify: false,
