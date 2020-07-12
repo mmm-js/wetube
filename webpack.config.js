@@ -8,7 +8,7 @@ const ENTRY_FILE = path.resolve(__dirname, "assets", "js", "main.js"); // entry�
 const OUTPUT_DIR = path.join(__dirname, "static"); // static폴더로 export
 
 const config = {
-  entry: ENTRY_FILE,
+  entry: ["@babel/polyfill", ENTRY_FILE],
   mode: MODE,
   // module을 발견할 떄마다 rules를 따르도록 하고 있다
   module: {
@@ -17,6 +17,14 @@ const config = {
      * use : 어떤 plugin들을 사용함, 어떤 처리를 하는지
      */
     rules: [
+      {
+        test: /\.(js)$/,
+        use: [
+          {
+            loader: "babel-loader",
+          },
+        ],
+      },
       {
         // .scss로 끝나는 어떤 module을 만나게 되면 ,
         // ExtractCSS.extract()이 plugin을 사용하도록 하고있다.
@@ -32,7 +40,7 @@ const config = {
             //css 호환성 관련된것을 해결해줌
             loader: "postcss-loader",
             options: {
-              plugin() {
+              plugins() {
                 //하나의 plugin으로만 이루어진 array를 리턴해주고 있지만,원하는 만큼 많은 plugin을 추가해줄 수 있다.
                 //autoprefixer()또한 많은 옵션들이 있다 옵션을 추가해 주자
                 return [autoprefixer({ browsers: "cover 99.5%" })];
