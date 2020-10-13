@@ -38,12 +38,38 @@ export const postLogin = passport.authenticate("local", {
 // 사용자를 깃헙으로 보내는 함수
 export const githubLogin = passport.authenticate("github");
 // 사용자가 깃헙으로 갔다가 돌아오면서 사용자 정보를 가져오면 실행되는 함수
-export const githubLoginCallback = (accessToken, refreshToken, profile, cb) => {
-  console.log(accessToken, refreshToken, profile, cb);
+export const githubLoginCallback = async (
+  accessToken,
+  refreshToken,
+  profile,
+  cb
+) => {
+  const {
+    _json: { id, avatar_url, name, email },
+  } = profile;
+  try {
+    const user = await User.findOne({ email });
+    // 깃헙에 넘어온 이메일이 이미 존재하는 이메일일 경우
+    if (user) {
+      user.githubId = id;
+      user.save();
+      return cb(null, user);
+    }
+
+    const newUser = await User.create({
+      email,
+      name,
+      githubId: id,
+      avatarUrl: avatar_url,
+    });
+    return cb(null, newUser);
+  } catch (error) {
+    return cb(error);
+  }
 };
 // github 로그인
 export const postGithubLogin = (req, res) => {
-  res.send(routes.home);
+  res.redirect(routes.home);
 };
 
 export const logout = (req, res) => {
