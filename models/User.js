@@ -8,7 +8,7 @@ const UserSchema = new mongoose.Schema({
   facebookId: Number,
   githubId: Number,
 });
-
+// plugin추가
 UserSchema.plugin(passportLocalMongoose, { usernameField: "email" });
 
 const model = mongoose.model("User", UserSchema);

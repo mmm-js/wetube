@@ -4,12 +4,14 @@ import morgan from "morgan";
 import helmet from "helmet";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import globalRouter from "./routers/globalRouter";
+import passport from "passport";
+import session from "express-session";
+
+import { localsMiddleware } from "./middlewares";
+import routes from "./routes";
 import userRouter from "./routers/userRouter";
 import videoRouter from "./routers/videoRouter";
-import routes from "./routes";
-import { localsMiddleware } from "./middlewares";
-import passport from "passport";
+import globalRouter from "./routers/globalRouter";
 
 import "./passport";
 
@@ -23,6 +25,14 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan("dev")); //logging
+app.use(
+  // passport initialize전에 설정
+  session({
+    secret: process.env.COOKIE_SECRET, // 여기에 들어가는 문자열로 암호화된다.
+    resave: true,
+    saveUninitialized: false,
+  })
+);
 app.use(passport.initialize());
 app.use(passport.session());
 
