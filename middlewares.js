@@ -12,6 +12,24 @@ export const localsMiddleware = (req, res, next) => {
   next();
 };
 
+// 비로그인 상태일때만 허용하는 middleware
+export const onlyPublic = (req, res, next) => {
+  if (req.user) {
+    res.redirect(routes.home);
+  } else {
+    next();
+  }
+};
+
+// 로그인 상태일때만
+export const onlyPrivate = (req, res, next) => {
+  if (req.user) {
+    next();
+  } else {
+    res.redirect(routes.home);
+  }
+};
+
 //single : 하나의 파일만
 //arg input name
 export const uploadVideo = multerVideo.single("videoFile");
