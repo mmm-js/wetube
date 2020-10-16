@@ -72,6 +72,17 @@ export const postGithubLogin = (req, res) => {
   res.redirect(routes.home);
 };
 
+// 사용자를 facebook으로 보내는 함수
+export const facebookLogin = passport.authenticate('facebook'); 
+// 사용자가 facebook으로 갔다가 돌아오면서 사용자 정보를 가져오면 실행되는 함수
+export const facebookLoginCallback = (accessToken, refreshToken, profile, cb) => {
+  console.log(accessToken, refreshToken, profile, cb);
+}
+// facebook 로그인
+export const postFacebookLogin = (req, res) => {
+  res.redirect(routes.home);
+}
+
 export const logout = (req, res) => {
   req.logout();
   res.redirect(routes.home);
@@ -82,8 +93,17 @@ export const getMe = (req, res) => {
   res.render("userDetail", { pageTitle: "User Detail", user: req.user });
 }
 
-export const userDetail = (req, res) =>
-  res.render("userDetail", { pageTitle: "User Detail" });
+// 사용자 프로필
+export const userDetail = async (req, res) => {
+  const { params : { id }} = req;
+  try{
+    const user = await User.findById(id);
+    res.render("userDetail", { pageTitle: "User Detail", user });
+  }catch(error){
+    res.redirect(routes.home);
+  }
+}
+  
 export const editProfile = (req, res) =>
   res.render("editProfile", { pageTitle: "Edit Profile" });
 export const changePassword = (req, res) =>
