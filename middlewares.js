@@ -3,6 +3,7 @@ import routes from "./routes";
 
 //파일 저장 destination 설정
 const multerVideo = multer({ dest: "uploads/videos/" });
+const multerAvatar = multer({dest: "uploads/avatars"});
 
 export const localsMiddleware = (req, res, next) => {
   res.locals.siteName = "WeTube";
@@ -31,5 +32,6 @@ export const onlyPrivate = (req, res, next) => {
 };
 
 //single : 하나의 파일만
-//arg input name
+//single(arg input name)
 export const uploadVideo = multerVideo.single("videoFile");
+export const uploadAvatar = multerAvatar.single("avatar");
