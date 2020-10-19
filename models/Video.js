@@ -24,6 +24,10 @@ const VideoSchema = new mongoose.Schema({
       ref: "Comment",
     },
   ],
+  creator: {
+    type : mongoose.Schema.Types.ObjectId,
+    ref : "User"
+  }
 });
 
 //schema를 통해 실제 document를 만든다.
