@@ -10,7 +10,9 @@ import {
   postLogin,
   githubLogin,
   postGithubLogin,
-  getMe
+  getMe,
+  facebookLogin,
+  postFacebookLogin
 } from "../controllers/userController";
 import { onlyPrivate, onlyPublic } from "../middlewares";
 
@@ -26,8 +28,8 @@ globalRouter.get(routes.home, home);
 globalRouter.get(routes.search, search);
 globalRouter.get(routes.logout, onlyPrivate, logout);
 
+// 깃헙 로그인 요청
 globalRouter.get(routes.github, githubLogin);
-
 // 로그인 처리
 globalRouter.get(
   routes.githubCallback,
@@ -36,5 +38,13 @@ globalRouter.get(
 );
 // 로그인 사용자 프로필
 globalRouter.get(routes.me, onlyPrivate, getMe);
+
+// 페이스북 로그인 요청
+globalRouter.get(routes.facebook, facebookLogin);
+// 로그인 처리
+globalRouter.get(routes.facebookCallback, passport.authenticate("facebook", { failureRedirect: "/login" }),
+postFacebookLogin
+)
+
 
 export default globalRouter;
