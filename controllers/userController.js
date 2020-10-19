@@ -109,15 +109,21 @@ export const logout = (req, res) => {
 };
 
 // 로그인 사용자 프로필
-export const getMe = (req, res) => {
-  res.render("userDetail", { pageTitle: "User Detail", user: req.user });
+export const getMe = async (req, res) => {
+  try{
+    const user = await User.findById(req.user.id).populate('videos');
+    res.render("userDetail", { pageTitle: "User Detail", user });
+  }catch(error){
+    res.redirect(routes.home);
+  }
 }
 
 // 사용자 프로필
 export const userDetail = async (req, res) => {
   const { params : { id }} = req;
   try{
-    const user = await User.findById(id);
+    const user = await User.findById(id).populate('videos');
+    console.log(user);
     res.render("userDetail", { pageTitle: "User Detail", user });
   }catch(error){
     res.redirect(routes.home);
