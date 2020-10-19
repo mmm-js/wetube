@@ -50,6 +50,7 @@ export const githubLoginCallback = async (
   try {
     const user = await User.findOne({ email });
     // 깃헙에 넘어온 이메일이 이미 존재하는 이메일일 경우
+    // 기존 user가 존재할 경우 avatarUrl은 변경하지 않음
     if (user) {
       user.githubId = id;
       user.save();
@@ -75,8 +76,27 @@ export const postGithubLogin = (req, res) => {
 // 사용자를 facebook으로 보내는 함수
 export const facebookLogin = passport.authenticate('facebook'); 
 // 사용자가 facebook으로 갔다가 돌아오면서 사용자 정보를 가져오면 실행되는 함수
-export const facebookLoginCallback = (accessToken, refreshToken, profile, cb) => {
-  console.log(accessToken, refreshToken, profile, cb);
+export const facebookLoginCallback = async (accessToken, refreshToken, profile, cb) => {
+  const { _json : {id, name, email}} = profile;
+  try{
+    const user = await User.findById({email});
+    // 기존 user가 존재할 경우 avatarUrl은 변경하지 않음
+    if(user){
+      user.facebookId = id;
+      user.save();
+      return cb(null, user);
+    }
+
+    const newUser = await User.create({
+      email,
+      name,
+      facebookId: id,
+      avatarUrl : `https://graph.facebook.com/${id}/picture?type=large`
+    });
+    return cb(null, newUser);
+  }catch(error){
+    return cb(error);
+  }
 }
 // facebook 로그인
 export const postFacebookLogin = (req, res) => {
