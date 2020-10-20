@@ -18,4 +18,7 @@ module.exports = {
     "spaced-comment": ["error", "always"], // 주석사용시 규칙적용
     "no-console": "off", // console사용 금지
   },
+  env : {// 환경설정
+    browser : true
+  }
 };
