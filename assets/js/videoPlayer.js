@@ -5,6 +5,7 @@ const volumeBtn = document.getElementById("jsVolumnBtn");
 const fullScrnBtn = document.getElementById("jsFullScreen");
 const currentTime = document.getElementById("currentTime");
 const totalTime = document.getElementById("totalTime");
+const volumeRange = document.getElementById("jsVolumn");
 
 function handlePlayClick(){
     if(videoPlayer.paused){
@@ -19,11 +20,12 @@ function handlePlayClick(){
 function handleVolumeClick(){
     if(videoPlayer.muted){
         videoPlayer.muted = false;
-        volumeBtn.innerHTML = "<i class='fas fa-volume-up'></i>";
+        volumeRange.value = videoPlayer.volume; // mute해제시 video볼륨값을 volumeRange에도 설정
     }else{
         videoPlayer.muted = true;
-        volumeBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+        volumeRange.value = 0;// mute일때 볼륨을 0으로 설정
     }
+    volumeIconSetting(volumeRange.value);
 }
 // fullscreen 여부에 관한건 존재하지 않기 떄문에 이벤트를 제어해 줘야함
 function goFullScreen(){
@@ -77,6 +79,9 @@ const formatDate = seconds => {
     return `${hours}:${minutes}:${totalSeconds}`;
   };
 
+function getCurrentTime(){
+    currentTime.innerHTML = formatDate(Math.floor(videoPlayer.currentTime));
+}
 
 function setTotalTime(){
     const totalTimeString = formatDate(videoPlayer.duration);
@@ -84,11 +89,34 @@ function setTotalTime(){
     setInterval(getCurrentTime, 1000);
 }
 
-function getCurrentTime(){
-    currentTime.innerHTML = formatDate(videoPlayer.currentTime);
+function handleVideoEnded(){
+    videoPlayer.currentTime = 0;
+    playBtn.innerHTML = "<i class='fas fa-play'></i>";   
+}
+
+function handleDrag(event){
+    const {
+        target : {value}
+    } = event;
+    videoPlayer.volume = value;
+    volumeIconSetting(value);
+}
+
+// 볼륨에따라 볼륨 아이콘 설정함수
+function volumeIconSetting(value){
+    if(value == 0){
+        volumeBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+    }else if( value >= 0.7){
+        volumeBtn.innerHTML = "<i class='fas fa-volume-up'></i>";
+    }else if( value >= 0.2){
+        volumeBtn.innerHTML = "<i class='fas fa-volume-down'></i>";
+    }else {
+        volumeBtn.innerHTML = "<i class='fas fa-volume-off'></i>";
+    }
 }
 
 init = () => {
+    videoPlayer.volume = 0.5;
     playBtn.addEventListener("click", handlePlayClick);
     volumeBtn.addEventListener("click", handleVolumeClick);
     fullScrnBtn.addEventListener("click", goFullScreen);
@@ -96,6 +124,8 @@ init = () => {
     //setTotalTime();
     // 아래와 같이 metadata가 로드된 후 setTotalTime함수 호출
     videoPlayer.addEventListener("loadedmetadata",setTotalTime);
+    videoPlayer.addEventListener("ended", handleVideoEnded);
+    volumeRange.addEventListener("input", handleDrag);
 }
 
 if(videoContainer){
