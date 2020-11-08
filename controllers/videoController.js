@@ -113,7 +113,7 @@ export const deleteVideo = async (req, res) => {
 
 
 // Register Video View API
-export const registerView = async(req, res) =>{
+export const postRegisterView = async(req, res) =>{
   const { params : {id}} = req;
   try{
     const video = await Video.findById(id);
